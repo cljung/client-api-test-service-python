@@ -1,0 +1,23 @@
+{
+    "authority": "...set at runtime...",
+    "includeQRCode": false,
+    "registration": {
+        "clientName": "...set at runtime..."
+    },
+    "callback": {
+        "url": "...set at runtime...",
+        "nounce": "...set at runtime...",
+        "state": "...set at runtime...",
+        "headers": {
+            "my-api-key": "blabla"
+        }
+    },
+    "issuance": {
+        "type": "",
+        "manifest": "https://beta.did.msidentity.com/v1.0/3c32ed40-8a10-465b-8ba4-0b1e86882668/verifiableCredential/contracts/VerifiedCredentialExpert",
+        "pin": {
+            "value": "",
+            "length": 0
+        }
+    }
+}

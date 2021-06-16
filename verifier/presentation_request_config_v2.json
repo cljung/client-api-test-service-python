@@ -1,0 +1,26 @@
+{
+    "authority": "...set at runtime...",
+    "includeQRCode": false,
+    "registration": {
+      "clientName": "...set at runtime..."
+    },
+    "callback": {
+      "url": "...set at runtime...",
+      "nonce": "...set at runtime...",
+      "state": "...set at runtime...",
+      "headers": {
+        "my-api-key": "blabla"
+      }
+    },
+    "presentation": {    
+      "includeReceipt": true,
+      "requestedCredentials": [
+        {
+          "type": "TrueIdentity",
+          "manifest": "https://beta.did.msidentity.com/v1.0/3c32ed40-8a10-465b-8ba4-0b1e86882668/verifiableCredential/contracts/VerifiedCredentialExpert",
+          "purpose": "the purpose why the verifier asks for a VC",
+          "trustedIssuers": [ "did-of-the-Issuer-trusted" ]
+        }
+      ]
+    }
+  }
