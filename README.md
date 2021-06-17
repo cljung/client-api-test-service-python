@@ -182,6 +182,22 @@ ngrok http 8081
 
 Grab, the url in the ngrok output (like `https://96a139d4199b.ngrok.io`) and Browse to it.
 
+### Docker build
+
+To run it locally with Docker
+
+```Powershell
+cd issuer
+docker build -t client-api-test-service-python-issuer:v1.0 .
+docker run --rm -it -p 8081:8081 -e DIDFILE=./issuance_request_config_v2.json client-api-test-service-python-issuer:v1.0
+```
+
+```Powershell
+cd verifier
+docker build -t client-api-test-service-python-verifier:v1.0 .
+docker run --rm -it -p 8082:8082 -e DIDFILE=./presentation_request_config_v2.json client-api-test-service-python-verifier:v1.0
+```
+
 ### Author the json payload files
 
 There are a few samples of json files in the `requests` folder and you can clone them as you like to use other credentials. As you can see in the sample files, much of the details are not specified. These are the autofill fules:
