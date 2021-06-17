@@ -36,9 +36,9 @@ manifest = r.json()
 print( manifest )
 
 issuanceConfig["registration"]["clientName"] = "Python Client API Verifier"
-issuanceConfig["registration"]["logoUrl"] = manifest["display"]["card"]["logo"]["uri"]
-issuanceConfig["authority"] = manifest["input"]["issuer"]
-if issuanceConfig["issuance"]["type"].isspace():
+if not str(issuanceConfig["authority"]).startswith("did:ion:"):
+    issuanceConfig["authority"] = manifest["input"]["issuer"]
+if str(issuanceConfig["issuance"]["type"]) == "":
     issuanceConfig["issuance"]["type"] = manifest["id"]
 if "pin" in issuanceConfig["issuance"] is not None:
     if int(issuanceConfig["issuance"]["pin"]["length"]) == 0:
@@ -67,7 +67,7 @@ def echoApi():
         'selfAssertedClaims': None
     }
     if "claims" in issuanceConfig["issuance"] is not None:
-        result.selfAssertedClaims = issuanceConfig["issuance"]["claims"]
+        result["selfAssertedClaims"] = issuanceConfig["issuance"]["claims"]
 
     return Response( json.dumps(result), status=200, mimetype='application/json')
 
@@ -76,7 +76,6 @@ def presentationRequest():
     id = str(uuid.uuid4())
     payload = issuanceConfig.copy()
     payload["callback"]["url"] = str(request.url_root).replace("http://", "https://") + "issue-request-api-callback"
-    payload["callback"]["nounce"] = str(uuid.uuid4())
     payload["callback"]["state"] = id
     pinCode = 0
     if "pin" in payload["issuance"] is not None:

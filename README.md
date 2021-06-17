@@ -27,7 +27,6 @@ To call the VC Client API to start the issuance process, the DotNet API creates 
     },
     "callback": {
         "url": "...set at runtime...",
-        "nounce": "...set at runtime...",
         "state": "...set at runtime...",
         "headers": {
             "my-api-key": "blabla"
@@ -58,6 +57,15 @@ To call the VC Client API to start the issuance process, the DotNet API creates 
 - **issuance.claims** - optional, extra claims you want to include in the VC.
 
 In the response message from the VC Client API, it will include it's own callback url, which means that once the Microsoft Authenticator has scanned the QR code, it will contact the VC Client API directly and not your node.js code. The node.js code will get confirmation via the callback.
+
+```json
+{
+    "requestId": "799f23ea-524a-45af-99ad-cf8e5018814e",
+    "url": "openid://vc?request_uri=https://dev.did.msidentity.com/v1.0/abc/verifiablecredentials/request/178319f7-20be-4945-80fb-7d52d47ae82e",
+    "expiry": 1622227690,
+    "qrCode": "data:image/png;base64,iVBORw0KGgoA<SNIP>"
+}
+```
 
 ### Issuance Callback
 
@@ -128,24 +136,24 @@ Once the VC is verified, you get a second, more complete, callback which contain
     "requestId":"c18d8035-3fc8-4c27-a5db-9801e6232569",
     "state": "...what you passed as the state value...",
     "subject": "did:ion: ... of the VC holder...",
-    "issuers": [
-      "type": [
-            "VerifiableCredential",
-            "your credentialType"
-      ],
-      "claims": {
-        "displayName":"Alice Contoso",
-        "sub":"...",
-        "tid":"...",
-        "username":"alice@contoso.com",
-        "lastName":"Contoso",
-        "firstName":"alice"
-      }
+    "issuers": [ 
+        {
+          "type": [ "VerifiableCredential", "your credentialType" ],
+          "claims": {
+            "displayName":"Alice Contoso",
+            "sub":"...",
+            "tid":"...",
+            "username":"alice@contoso.com",
+            "lastName":"Contoso",
+            "firstName":"alice"
+          },
+          "domain":"https://did.woodgrovedemo.com/",
+          "verified":"DNS"
+        }
     ],
     "receipt":{
         "id_token": "...JWT Token of VC..."
-        },
-        "state":"...VC Client API state..."
+        }
     }
 }
 ```

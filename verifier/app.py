@@ -36,10 +36,10 @@ manifest = r.json()
 print( manifest )
 
 presentationConfig["registration"]["clientName"] = "Python Client API Verifier"
-presentationConfig["registration"]["logoUrl"] = manifest["display"]["card"]["logo"]["uri"]
-presentationConfig["authority"] = manifest["input"]["issuer"]
+if not str(presentationConfig["authority"]).startswith("did:ion:"):
+    presentationConfig["authority"] = manifest["input"]["issuer"]
 presentationConfig["presentation"]["requestedCredentials"][0]["trustedIssuers"][0] = manifest["input"]["issuer"]
-if presentationConfig["presentation"]["requestedCredentials"][0]["type"].isspace():
+if str(presentationConfig["presentation"]["requestedCredentials"][0]["type"]) == "":
     presentationConfig["presentation"]["requestedCredentials"][0]["type"] = manifest["id"]
 
 @app.route('/')
@@ -71,7 +71,6 @@ def presentationRequest():
     id = str(uuid.uuid4())
     payload = presentationConfig.copy()
     payload["callback"]["url"] = str(request.url_root).replace("http://", "https://") + "presentation-request-api-callback"
-    payload["callback"]["nounce"] = str(uuid.uuid4())
     payload["callback"]["state"] = id
     print( json.dumps(payload) )
     post_headers = {"content-type": "application/json"}
