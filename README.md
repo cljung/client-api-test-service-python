@@ -163,7 +163,7 @@ Some notable attributes in the message:
 
 ## Running the sample
 
-### Standalone
+### Running the issuer
 To run the sample standalone, just clone the repository, compile & run it. It's callback endpoint must be publically reachable, and for that reason, use `ngrok` as a reverse proxy to read your app.
 
 ```Powershell
@@ -179,6 +179,23 @@ Then, open a separate command prompt and run the following command
 ```Powershell
 ngrok http 8081
 ```
+
+### Running the verifier
+To run the sample verifier standalone, navigate to the verifier folder, do `pip install -r requirements.txt` and start it. Then run `ngrok` with a different port than the issuer.
+
+```Powershell
+cd verifier
+pip install -r requirements.txt
+python app.py ./presentation_request_config_v2.json
+```
+
+Then, open a separate command prompt and run the following command
+
+```Powershell
+ngrok http 8082
+```
+
+Grab, the url in the ngrok output (like `https://96a139d4199c.ngrok.io`) and Browse to it.
 
 Grab, the url in the ngrok output (like `https://96a139d4199b.ngrok.io`) and Browse to it.
 
