@@ -11,6 +11,7 @@ import configparser
 import argparse
 import requests
 from random import randint
+import msal
 
 cacheConfig = {
     "DEBUG": True,          # some Flask specific configs
@@ -28,6 +29,19 @@ log.setLevel(logging.INFO)
 fI = open(sys.argv[1],)
 issuanceConfig = json.load(fI)
 fI.close()  
+
+configFileName = ".\didconfig.json"
+if len(sys.argv) >= 3:
+   configFileName = sys.argv[2]
+
+fP = open(configFileName,)
+config = json.load(fP)
+fP.close()  
+
+cca = msal.ConfidentialClientApplication( config["azClientId"], 
+    authority="https://login.microsoftonline.com/" + config["azTenantId"],
+    client_credential=config["azClientSecret"],
+    )
 
 print( issuanceConfig["issuance"]["manifest"] )
 
@@ -74,6 +88,15 @@ def echoApi():
 @app.route("/issue-request-api", methods = ['GET'])
 def presentationRequest():
     id = str(uuid.uuid4())
+
+    accessToken = ""
+    result = cca.acquire_token_for_client( scopes="bbb94529-53a3-4be5-a069-7eaf2712b826/.default" )
+    if "access_token" in result:
+        print( result['access_token'] )
+        accessToken = result['access_token']
+    else:
+        print(result.get("error") + result.get("error_description"))
+
     payload = issuanceConfig.copy()
     payload["callback"]["url"] = str(request.url_root).replace("http://", "https://") + "issue-request-api-callback"
     payload["callback"]["state"] = id
@@ -85,8 +108,9 @@ def presentationRequest():
         for claim in issuanceConfig["issuance"]["claims"]:
             payload["issuance"]["claims"][claim] = id = request.args.get(claim)
     print( json.dumps(payload) )
-    post_headers = {"content-type": "application/json"}
-    r = requests.post('https://dev.did.msidentity.com/v1.0/abc/verifiablecredentials/request'
+    post_headers = { "content-type": "application/json", "Authorization": "Bearer " + accessToken }
+    client_api_request_endpoint = "https://beta.did.msidentity.com/v1.0/" + config["azTenantId"] + "/verifiablecredentials/request"
+    r = requests.post( client_api_request_endpoint
                     , headers=post_headers, data=json.dumps(payload))
     resp = r.json()
     print(resp)
